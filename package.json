@@ -35,7 +35,19 @@
     "sdk",
     "api-client"
   ],
-  "author": "astermoe",
+  "author": {
+    "name": "Aster Moline",
+    "email": "aster@moline.dev",
+    "url": "https://aster.quest"
+  },
+  "homepage": "https://aster.quest",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/astermoline/archivist-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/astermoline/archivist-sdk/issues"
+  },
   "license": "MIT",
   "devDependencies": {
     "typescript": "^5.4.5",

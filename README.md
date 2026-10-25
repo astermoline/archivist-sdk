@@ -84,4 +84,4 @@ console.log(`Archivist: ${answer.answer}`);
 
 ## License
 
-MIT © [astermoe](https://github.com/astermoe)
+MIT © [Aster Moline](https://aster.quest) ([@astermoline](https://github.com/astermoline))
