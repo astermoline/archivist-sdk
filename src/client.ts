@@ -46,6 +46,17 @@ export interface ArchivistClientOptions {
   fetchFn?: typeof fetch;
 }
 
+function resolveFetch(customFetch?: typeof fetch): typeof fetch {
+  if (customFetch) return customFetch;
+  if (typeof globalThis !== 'undefined' && typeof globalThis.fetch === 'function') {
+    return globalThis.fetch.bind(globalThis);
+  }
+  if (typeof window !== 'undefined' && typeof window.fetch === 'function') {
+    return window.fetch.bind(window);
+  }
+  throw new Error('No fetch implementation available. Pass options.fetchFn or use in a Node 18+ / browser environment.');
+}
+
 export class ArchivistClient {
   private apiKey: string;
   private baseUrl: string;
@@ -57,11 +68,7 @@ export class ArchivistClient {
     }
     this.apiKey = options.apiKey;
     this.baseUrl = (options.baseUrl || 'https://api.myarchivist.ai').replace(/\/+$/, '');
-    this.fetchFn = options.fetchFn || (typeof fetch !== 'undefined' ? fetch : undefined as any);
-
-    if (!this.fetchFn) {
-      throw new Error('No fetch implementation available. Pass options.fetchFn or use in a Node 18+ / browser environment.');
-    }
+    this.fetchFn = resolveFetch(options.fetchFn);
   }
 
   private async request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -76,7 +83,7 @@ export class ArchivistClient {
       headers['Content-Type'] = 'application/json';
     }
 
-    const response = await this.fetchFn(url, { ...options, headers });
+    const response = await this.fetchFn.call(globalThis, url, { ...options, headers });
 
     if (!response.ok) {
       let detail = '';
