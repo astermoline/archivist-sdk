@@ -93,7 +93,7 @@ describe('ArchivistClient', () => {
     const items = await client.items.list({ campaign_id: 'camp_1' });
     expect(mockFetch).toHaveBeenCalledOnce();
     const [url] = mockFetch.mock.calls[0];
-    expect(url).toBe('https://api.myarchivist.ai/v1/items?campaign_id=camp_1');
+    expect(url).toBe('https://api.myarchivist.ai/v1/items?campaign_id=camp_1&with_links=true');
     expect(items.data[0].name).toBe('Sunblade');
   });
 

@@ -111,6 +111,7 @@ export interface ListCharactersParams extends PaginationParams {
   campaign_id: ID;
   type?: CharacterType;
   fields?: 'card';
+  with_links?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -150,6 +151,7 @@ export interface UpdateItemRequest {
 
 export interface ListItemsParams extends PaginationParams {
   campaign_id: ID;
+  with_links?: boolean;
 }
 
 // ---------------------------------------------------------------------------

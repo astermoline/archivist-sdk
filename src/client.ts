@@ -136,11 +136,14 @@ export class ArchivistClient {
       if (params.size !== undefined) q.set('size', String(params.size));
       if (params.type) q.set('type', params.type);
       if (params.fields) q.set('fields', params.fields);
+      q.set('with_links', params.with_links !== undefined ? String(params.with_links) : 'true');
       return this.request<PaginatedResponse<Character>>(`/v1/characters?${q.toString()}`);
     },
 
-    get: (id: string): Promise<Character> => {
-      return this.request<Character>(`/v1/characters/${encodeURIComponent(id)}`);
+    get: (id: string, params?: { with_links?: boolean }): Promise<Character> => {
+      const q = new URLSearchParams();
+      q.set('with_links', params?.with_links !== undefined ? String(params.with_links) : 'true');
+      return this.request<Character>(`/v1/characters/${encodeURIComponent(id)}?${q.toString()}`);
     },
 
     create: (payload: CreateCharacterRequest): Promise<Character> => {
@@ -173,11 +176,14 @@ export class ArchivistClient {
       const q = new URLSearchParams({ campaign_id: params.campaign_id });
       if (params.page !== undefined) q.set('page', String(params.page));
       if (params.size !== undefined) q.set('size', String(params.size));
+      q.set('with_links', params.with_links !== undefined ? String(params.with_links) : 'true');
       return this.request<PaginatedResponse<Item>>(`/v1/items?${q.toString()}`);
     },
 
-    get: (id: string): Promise<Item> => {
-      return this.request<Item>(`/v1/items/${encodeURIComponent(id)}`);
+    get: (id: string, params?: { with_links?: boolean }): Promise<Item> => {
+      const q = new URLSearchParams();
+      q.set('with_links', params?.with_links !== undefined ? String(params.with_links) : 'true');
+      return this.request<Item>(`/v1/items/${encodeURIComponent(id)}?${q.toString()}`);
     },
 
     create: (payload: CreateItemRequest): Promise<Item> => {
