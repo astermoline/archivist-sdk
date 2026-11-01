@@ -47,7 +47,7 @@ export interface CampaignStats {
 // Character
 // ---------------------------------------------------------------------------
 
-export type CharacterType = 'PC' | 'NPC' | 'Other';
+export type CharacterType = "PC" | "NPC" | "Other";
 
 export interface CharacterPlayer {
   id: ID;
@@ -65,6 +65,11 @@ export interface CharacterCard {
   image?: string;
 }
 
+/**
+ * Character entity.
+ * Note: Compendium text fields (description, backstory) support Markdown
+ * including tables, code blocks, math ($$...$$), mermaid diagrams, and images.
+ */
 export interface Character {
   id: ID;
   campaign_id: ID;
@@ -110,7 +115,7 @@ export interface UpdateCharacterRequest {
 export interface ListCharactersParams extends PaginationParams {
   campaign_id: ID;
   type?: CharacterType;
-  fields?: 'card';
+  fields?: "card";
   with_links?: boolean;
 }
 
@@ -118,6 +123,11 @@ export interface ListCharactersParams extends PaginationParams {
 // Item
 // ---------------------------------------------------------------------------
 
+/**
+ * Item entity.
+ * Note: Compendium text fields (description) support Markdown
+ * including tables, code blocks, math ($$...$$), mermaid diagrams, and images.
+ */
 export interface Item {
   id: ID;
   campaign_id: ID;
@@ -155,10 +165,163 @@ export interface ListItemsParams extends PaginationParams {
 }
 
 // ---------------------------------------------------------------------------
+// Journal Entries
+// ---------------------------------------------------------------------------
+
+export type JournalContentFormat = "plain" | "markdown";
+export type JournalFormat = "text" | "markdown";
+export type JournalStatus = "draft" | "published" | "archived";
+
+export interface JournalEntry {
+  id: ID;
+  worldId?: ID;
+  campaign_id?: ID;
+  title: string;
+  summary?: string | null;
+  content?: string | null;
+  contentFormat?: JournalContentFormat;
+  content_format?: JournalContentFormat;
+  contentRich?: Record<string, unknown> | null;
+  contentMetadata?: Record<string, unknown> | null;
+  tags?: string[];
+  coverImage?: string | null;
+  isPinned?: boolean;
+  isPublic?: boolean;
+  status?: JournalStatus;
+  publishedAt?: ISODate | null;
+  archivedAt?: ISODate | null;
+  folderId?: string | null;
+  authorId?: string | null;
+  createdAt?: ISODate;
+  updatedAt?: ISODate;
+  created_at?: ISODate;
+  updated_at?: ISODate;
+}
+
+export interface JournalEntryCard {
+  id: ID;
+  worldId?: ID;
+  title: string;
+  summary?: string | null;
+  coverImage?: string | null;
+  isPinned?: boolean;
+  isPublic?: boolean;
+  status?: JournalStatus;
+  folderId?: string | null;
+  createdAt?: ISODate;
+  updatedAt?: ISODate;
+}
+
+export interface CreateJournalEntryRequest {
+  worldId?: ID;
+  campaign_id?: ID;
+  title: string;
+  summary?: string | null;
+  content?: string | null;
+  contentFormat?: JournalContentFormat;
+  content_format?: JournalContentFormat;
+  contentRich?: Record<string, unknown> | null;
+  contentMetadata?: Record<string, unknown> | null;
+  tags?: string[];
+  coverImage?: string | null;
+  isPinned?: boolean;
+  isPublic?: boolean;
+  status?: JournalStatus;
+  publishedAt?: ISODate | null;
+  archivedAt?: ISODate | null;
+  folderId?: string | null;
+}
+
+export interface UpdateJournalEntryRequest {
+  id?: ID;
+  title?: string | null;
+  summary?: string | null;
+  content?: string | null;
+  contentFormat?: JournalContentFormat;
+  content_format?: JournalContentFormat;
+  contentRich?: Record<string, unknown> | null;
+  contentMetadata?: Record<string, unknown> | null;
+  tags?: string[] | null;
+  coverImage?: string | null;
+  isPinned?: boolean | null;
+  isPublic?: boolean | null;
+  status?: JournalStatus | null;
+  publishedAt?: ISODate | null;
+  archivedAt?: ISODate | null;
+  folderId?: string | null;
+  authorId?: string | null;
+  permissions?: Record<string, unknown> | null;
+}
+
+export interface ListJournalsParams extends PaginationParams {
+  campaign_id: ID;
+  with_links?: boolean;
+  format?: JournalFormat;
+  fields?: "card";
+}
+
+export interface GetJournalParams {
+  with_links?: boolean;
+  format?: JournalFormat;
+}
+
+// ---------------------------------------------------------------------------
+// Journal Folders
+// ---------------------------------------------------------------------------
+
+export interface JournalFolder {
+  id: ID;
+  worldId?: ID;
+  campaign_id?: ID;
+  name: string;
+  path: string;
+  parentId?: string | null;
+  description?: string | null;
+  position?: number;
+  metadata?: Record<string, unknown> | null;
+  createdAt?: ISODate;
+  updatedAt?: ISODate;
+  created_at?: ISODate;
+  updated_at?: ISODate;
+}
+
+export interface CreateJournalFolderRequest {
+  worldId?: ID;
+  campaign_id?: ID;
+  name: string;
+  path: string;
+  parentId?: string | null;
+  description?: string | null;
+  position?: number;
+  metadata?: Record<string, unknown> | null;
+}
+
+export interface UpdateJournalFolderRequest {
+  id?: ID;
+  name?: string | null;
+  path?: string | null;
+  parentId?: string | null;
+  description?: string | null;
+  position?: number | null;
+  metadata?: Record<string, unknown> | null;
+}
+
+export interface JournalTreeNode {
+  id: ID;
+  name: string;
+  path: string;
+  parentId?: string | null;
+  type: "folder" | "journal";
+  children?: JournalTreeNode[];
+  [key: string]: unknown;
+}
+
+// ---------------------------------------------------------------------------
 // Session
 // ---------------------------------------------------------------------------
 
-export type SessionType = 'audioUpload' | 'playByPost' | 'discordVoice' | 'txtUpload' | 'rawNotes' | 'other';
+export type SessionType = "audioUpload" | "playByPost" | "discordVoice" | "txtUpload" | "rawNotes" | "other";
+export type TranscriptFormat = "json" | "markdown";
 
 export interface GameSession {
   id: ID;
@@ -194,11 +357,15 @@ export interface ListSessionsParams extends PaginationParams {
   campaign_id: ID;
 }
 
+export interface SessionTranscriptParams {
+  format?: TranscriptFormat;
+}
+
 // ---------------------------------------------------------------------------
 // Beat
 // ---------------------------------------------------------------------------
 
-export type BeatType = 'major' | 'minor' | 'step';
+export type BeatType = "major" | "minor" | "step";
 
 export interface Beat {
   id: ID;
@@ -273,6 +440,11 @@ export interface Faction {
   updated_at?: ISODate;
 }
 
+export interface ListFactionsParams extends PaginationParams {
+  campaign_id: ID;
+  with_links?: boolean;
+}
+
 export interface Location {
   id: ID;
   campaign_id: ID;
@@ -288,6 +460,11 @@ export interface Location {
   updated_at?: ISODate;
 }
 
+export interface ListLocationsParams extends PaginationParams {
+  campaign_id: ID;
+  with_links?: boolean;
+}
+
 export interface Quest {
   id: ID;
   campaign_id: ID;
@@ -300,12 +477,16 @@ export interface Quest {
   updated_at?: ISODate;
 }
 
+export interface ListQuestsParams extends PaginationParams {
+  campaign_id: ID;
+}
+
 // ---------------------------------------------------------------------------
 // Ask (RAG)
 // ---------------------------------------------------------------------------
 
 export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
 }
 
